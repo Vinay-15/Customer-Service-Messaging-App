@@ -29,7 +29,6 @@ Additional Features
   > The below image is the UI of the application.
  
   - The Search bar can be used to search over any message in the entire database.
-  - The Refresh button displays new unresolved customer queries on the app.
   - Chat History button can be used to look at our response history.
 
   ![image](https://user-images.githubusercontent.com/84071335/200565567-a72955d9-2b52-4688-b6eb-10cad2f86367.png)
