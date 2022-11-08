@@ -1,0 +1,17 @@
+Requirements:
+
+If you're device is Windows-OS:
+- Download the zip file and extract all files into a single folder
+- Please do not mess with any files in the build folder
+- Just run the branch_app.exe
+
+If you're a Linux/Unix user or just want to run the code in a code editor
+- modules to be installed
+  - python
+  - pillow
+  - tkinter
+  - requests
+  - random
+- you can run the code without any errors if all the modules are installed correctly
+- if you're moving the code to another directory, please do move the build folder to that directory as well
+the image file, icon file for the code to run are present in the build folder. 
