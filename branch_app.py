@@ -4,17 +4,19 @@ import requests
 from PIL import ImageTk,Image
 import random
 
+# The below auth is used to generate an authorization ID which is unique every time you run the app
 auth = ""
 for i in range(5):
     auth += str(random.randint(0,9))
 print(auth)
 
+# initiating Tkinter
 app = Tk()
 app.geometry('920x700')
 app.title("Branch International")
 app.iconbitmap(r'build\icons\branch_logo.ico')
 app['background']="lavender"
-
+# PIL module for the image
 img = ImageTk.PhotoImage(Image.open('build\icons\\branchimage.png'))
 msg=Label(image=img, background='lavender')
 msg.pack()
@@ -22,7 +24,7 @@ msg.pack()
 main_frame = Frame(app)
 main_frame.pack(fill=BOTH, expand=1)
 main_frame['background']='lavender'
-
+#initializing canvas to add scrollbar to the application
 #creating a canvas
 my_canvas = Canvas(main_frame)
 my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -43,14 +45,10 @@ second_frame['background']='lavender'
 #Add new frame to the window in the canvas
 my_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
-#msg=Label(image=img)
-#msg=Label(second_frame,text=" Branch International ",background="lavender",foreground="darkorange1", font=("Times",34, "bold"))
-#msg.grid(row=0,column=2,padx=25,pady=20)
-#msg.pack()
 
-
-class customers:              #Creating a class called restaurant
-    def __init__(self, link):  #initializing the link and header file
+# Creating a class customers
+class customers:
+    def __init__(self, link):  # constructor
         self.link = link
         self.hdr = {
             'apikey': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNuZG9oeGV5Z3Npb2hvZnF2bHpzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY2NzU2NDExOSwiZXhwIjoxOTgzMTQwMTE5fQ.FjOs3gzzURUVeuonOBw2K-_FfB97Sx3fzZaX9bndM_g",
@@ -58,53 +56,51 @@ class customers:              #Creating a class called restaurant
 }
         r = requests.get(self.link, headers=self.hdr)
         self.data = r.json()
-        #print('**',self.data)
 
-    def getuid(self,data):
+    def getuid(self,data):   # gets the user id
         self.uid = []
         for i in data:
             self.uid.append(i['User ID'])
         return self.uid
 
-    def getmessage(self,data):
+    def getmessage(self,data):  # gets the user message
         self.msg = []
         for i in data:
             self.msg.append(i['Message'])
         return self.msg
 
-    def gettime(self,data):
+    def gettime(self,data):  # gets the timestamp
         self.time = []
         for i in data:
             self.time.append(i['Timestamp'])
         return self.time
 
-    def getid(self,data):
+    def getid(self,data):  # gets the index
         self.id = []
         for i in data:
             self.id.append(i['id'])
         return self.id
 
-    def getresponse(self,data):
+    def getresponse(self,data):  # gets the response field data
         self.response = []
         for i in data:
             self.response.append(i['Response'])
         return self.response
 
-    def getrid(self,data):
+    def getrid(self,data):  # gets the Response ID field data
         self.rid = []
         for i in data:
             self.rid.append(i['Response ID'])
         return self.rid
 
-    def updatedata(self):
+    def updatedata(self):  # function updates the values of all the fields on the app
         '''link = 'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service'
         obj4 = customers(link)
         data = obj4.savedata()
         obj4.filterdata(data)'''
         return self.ext_data
 
-
-    def savedata(self):
+    def savedata(self):  # transforms the json data into required format
         data = self.data
         userid=obj.getuid(data)
         message=obj.getmessage(data)
@@ -112,22 +108,17 @@ class customers:              #Creating a class called restaurant
         response=obj.getresponse(data)
         rid=obj.getrid(data)
         id = obj.getid(data)
-
         self.main_data=[]
         for i in range(len(userid)):
             self.main_data.append([userid[i],message[i],timestamp[i],response[i],rid[i],id[i]])
-            #print([userid[i],message[i],timestamp[i],response[i],rid[i]])
         return self.main_data
 
-    def search(self):
+    def search(self):  # the function enables search functionality over the application
         new_data=[]
         key = searchE.get()
-
         link = 'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service'
-
         obj2 = customers(link)
         data = obj2.savedata()
-
         for ele in data:
             i = 0
             j = len(key)
@@ -140,7 +131,8 @@ class customers:              #Creating a class called restaurant
                     j += 1
         self.filterdata(new_data)
 
-    def authenticate(self,data):
+    # the below function helps to manage and divide work amongst other agents so no two agents will get the same data
+    def authenticate(self,data):    # flags the data being viewed by the user so no other user can access the same data
         self.hdr['Content-Type'] = 'application/json'
         self.hdr['Prefer'] = 'return=representation'
         for ele in data:
@@ -149,8 +141,7 @@ class customers:              #Creating a class called restaurant
             url = f'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service?id=eq.{x}'
             r = requests.patch(url, headers=self.hdr, json=d)
 
-
-    #filters the records and gets the top 10 queries tp look after
+    # filters the records and gets the top 10 queries to display them on the application
     def filterdata(self, data):
         self.ext_data = []
         for ele in data:
@@ -172,28 +163,25 @@ class customers:              #Creating a class called restaurant
         for i in self.ext_data:
             print(i)
         self.authenticate(self.ext_data)
-
         self.application(self.ext_data)
 
-    def upload(self,req,d):
+    def upload(self,req,d):   # this function is responsible to update the data of a field when the 'reply' button has been pressed
         self.hdr['Content-Type'] = 'application/json'
         self.hdr['Prefer'] = 'return=representation'
         x=str(req[-1])
-
         d = {'Response': d}
         url = f'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service?id=eq.{x}'
         r = requests.patch(url, headers=self.hdr, json=d)
 
-    def delauth(self,req,d):
+    def delauth(self,req,d):  # this function is responsible to delete the user authentication ID from the 'Response ID' field
         self.hdr['Content-Type'] = 'application/json'
         self.hdr['Prefer'] = 'return=representation'
         x = str(req[-1])
-
         d = {'Response ID': d}
         url = f'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service?id=eq.{x}'
         r = requests.patch(url, headers=self.hdr, json=d)
 
-    def deauthenticate(self):
+    def deauthenticate(self):   # this function runs when the application is closed, this function is responsible for deleting the authorization IDs
         link = 'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service'
         obj1 = customers(link)
         data = obj1.savedata()
@@ -205,7 +193,7 @@ class customers:              #Creating a class called restaurant
         for ele in auth_data:
             self.delauth(ele,s)
 
-
+# the following 10 functions are for the 'reply' buttons present on the application.
     def b1ex(self):
         ext = self.updatedata()
         req=ext[0]
@@ -266,7 +254,7 @@ class customers:              #Creating a class called restaurant
         d = r10E.get()
         self.upload(req, d)
 
-    #the below function is for the application to display our results
+    # the below function is for the GUI application to display our results in a neat formatted way.
     def application(self,data):
         row_val = 5
         for ele in data:
@@ -288,22 +276,13 @@ class customers:              #Creating a class called restaurant
             l.insert(1.0, ele[1])
             l.grid(row=row_val, column=2, padx=10, pady=10)
             row_val += 1
-
             p = Label(second_frame, text=' ', background="lavender",
                       foreground="lightsteelblue2",
                       font=("Arial", 14))
             p.grid(row=row_val, column=1, padx=10, pady=10)
             row_val += 1
 
-def refresh():
-    link = 'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service'
-
-    obj1 = customers(link)
-    data = obj1.savedata()
-    obj1.filterdata(data)
-
-
-def history():
+def history():   # this function is responsible to display the data of all our previous responses in a new pop up application window
     app1 = Toplevel()
     app1.geometry('880x700')
     app1.title("Chat History")
@@ -351,6 +330,7 @@ def history():
 
     row_val=1
     for ele in his_data:
+        # the below lines display the User ID and messages on the application
         # User ID
         p = Label(third_frame, text='User ID : ', bd=1, background="lavender", foreground="maroon",
                   font=("Arial", 11, "bold"))
@@ -388,12 +368,12 @@ def history():
         row_val += 2
 
 
-
+# the main function being called here
 link = 'https://sndohxeygsiohofqvlzs.supabase.co/rest/v1/Customer Service'
-
 obj = customers(link)
 data = obj.savedata()
 
+# the below lines display the search bar and button on the application
 p = Label(second_frame, text='Search', bd=1, background="lavender", foreground="Sienna",
               font=("Arial", 13, "bold"))
 p.grid(row=2, column=0, padx=5, pady=10, columnspan=2)
@@ -411,11 +391,10 @@ p.grid(row=3, column=1, padx=10, pady=10)
 p = Label(second_frame, text='                                        Customer Queries                                        ', bd=1, background="slate grey", foreground="white",
               font=("MS Sans", 22,"bold"))
 p.grid(row=4, column=0, padx=5, pady=10, columnspan=6)
-
 obj.filterdata(data)
 
 
-# Response Entry and Button fields
+# the below lines display the response Entry field and reply buttonon the application
 r=7
 # field1
 p = Label(second_frame, text='Reply : ', bd=1, background="lavender", foreground="Sienna",
@@ -527,12 +506,10 @@ B10 = Button(second_frame, text="reply", command=obj.b10ex,foreground='Maroon', 
 B10.grid(row=r, column=4, padx=15, pady=25, columnspan=2)
 r = r+3
 
-#Bref = Button(second_frame, text="Refresh", command=refresh,foreground='maroon3', background='thistle2', width=15, font=("Arial",10,"bold"))
-#Bref.grid(row=3, column=0, padx=15, pady=25, columnspan=2)
-
 Bresp = Button(second_frame, text="Chat History", command=history, foreground='maroon3', background='thistle2', width=15, font=("Arial",10,"bold"))
 Bresp.grid(row=3, column=2, padx=15, pady=25, columnspan=2)
 
 mainloop()
 
+# calling the deauthenticate function to delete all the agent ID in the 'response ID' field
 obj.deauthenticate()
