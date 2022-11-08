@@ -1,4 +1,4 @@
-# branch-dev
+# Customer-Service-Messaging-App
 <h1>Customer Service messaging application 👨‍💻</h1>
 
 This is a complete Desktop Application with full-fledged front-end and back-end structure
