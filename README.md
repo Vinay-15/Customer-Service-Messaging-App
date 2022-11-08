@@ -1,5 +1,4 @@
-# Customer-Service-Messaging-App
-<h1>Customer Service messaging application 👨‍💻</h1>
+<h1><u>Customer Service messaging application 👨‍💻</u></h1>
 
 This is a complete Desktop Application with full-fledged front-end and back-end structure
 - The front-end is built using Python GUI module tkinter.
